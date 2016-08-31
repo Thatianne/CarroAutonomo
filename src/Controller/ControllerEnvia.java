@@ -30,20 +30,27 @@ public class ControllerEnvia {
     private final Via destino;
     private int preferencia;
     private String hora;
+    private String[] msgCarros;
     
-    public ControllerEnvia(Via origem, Via destino, int pref) {
+    public ControllerEnvia(Via origem, Via destino, int pref, String[] msgCarros) {
         this.origem = origem;
         this.destino = destino;
         this.preferencia = pref;
+        this.msgCarros = msgCarros;
     }
 
     public void envia() {
+        // hora de inicio
+        hora = geraHoraInicial();
+        //hora final, que termina  ação requisitada
+        
+        
         while (true) {
             byte[] b = null;
             //Precisa mandar para todos da rede a hora que ele começou a andar na via para ser decidido a preferência
             //Mandar hora, origem, destino - "HH:mm:ss Norte Sul" até terminar de atravesar a via.
-            hora = geraHora();
             
+                                   
             String msg = hora + " " + origem.getVia() + " " + destino.getVia();
 
             try {
@@ -75,12 +82,17 @@ public class ControllerEnvia {
         }
     }
 
-    private String geraHora() {
+    private String geraHoraInicial() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         Date hora = Calendar.getInstance().getTime();
 
         String dataFormatada = sdf.format(hora);
         return dataFormatada;
+    }
+    
+    private String geraHoraFinal(){
+        String hora = null;
+        return hora;
     }
     
     private float calAceleracao(float vFinal, float vInicial, float distancia ){

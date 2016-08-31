@@ -12,6 +12,7 @@ public class Principal {
     private final Via origem;// ******** VER DEPOIS SE VAI DAR ERRO **********
     private final Via destino;
     private int preferencia = 0;
+    private String[] msgCarros;
     
     
     public static void main(String[] args) {
@@ -22,17 +23,18 @@ public class Principal {
     public Principal(Via origem, Via destino){
         this.origem = origem;
         this.destino = destino;
+        this.msgCarros = new String[4];
     }
     
     public Date start(){
         Date tempo = null;
         //cria a thread para mandar mensagem
-        ExecuteEnvia ee = new ExecuteEnvia(origem, destino, preferencia);        
+        ExecuteEnvia ee = new ExecuteEnvia(origem, destino, preferencia, msgCarros);        
         Thread t = new Thread(ee);
         t.start();
         
         //thread para receber
-        ExecuteRecebe er = new ExecuteRecebe(origem, destino, preferencia);
+        ExecuteRecebe er = new ExecuteRecebe(origem, destino, preferencia, msgCarros);
         er.executa();
         
         //retorna o tempo que leva pra o carro ter preferência, poderia retornar o tempo que demora para ele atravesar

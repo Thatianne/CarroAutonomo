@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Model.Via;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -18,6 +19,18 @@ public class ControllerRecebe {
     
     private final String grupo = "239.0.0.1";
     private final int porta = 5000;
+    
+    private final Via origem;
+    private final Via destino;
+    private int preferencia;    
+    private String[] msgCarros;
+    
+    public ControllerRecebe(Via origem, Via destino, int pref, String[] msgCarros){
+        this.origem = origem;
+        this.destino = destino;
+        this.preferencia = pref;
+        this.msgCarros = msgCarros;
+    }
     
     public void recebe(){
         while(true){            
@@ -33,7 +46,7 @@ public class ControllerRecebe {
                 DatagramPacket dp = new DatagramPacket(rec, rec.length);
                 ms.receive(dp);
                 msg = new String(dp.getData());
-                //Recebe hora, origem, destino - "HH:mm:ss Norte Sul" até terminar de atravesar a via (msg).
+                //Recebe hora, origem, destino, hora de término - "HH:mm:ss Norte Sul HH:mm:ss" até terminar de atravesar a via (msg).
                 
                 
                 
