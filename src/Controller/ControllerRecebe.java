@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.ArrayList;
 
 /**
  *
@@ -23,9 +24,9 @@ public class ControllerRecebe {
     private final Via origem;
     private final Via destino;
     private int preferencia;    
-    private String[] msgCarros;
+    private ArrayList<String> msgCarros;
     
-    public ControllerRecebe(Via origem, Via destino, int pref, String[] msgCarros){
+    public ControllerRecebe(Via origem, Via destino, int pref, ArrayList<String> msgCarros){
         this.origem = origem;
         this.destino = destino;
         this.preferencia = pref;
@@ -33,8 +34,10 @@ public class ControllerRecebe {
     }
     
     public void recebe(){
-        while(true){            
-            String msg = null;
+        int qtdMsg = 0;
+        String msg = null;
+        
+        while(qtdMsg < 3){                        
         
         try {
                 
@@ -43,16 +46,16 @@ public class ControllerRecebe {
                 ms.joinGroup(grp);
                                 
                 byte[] rec = new byte[256];
-                DatagramPacket dp = new DatagramPacket(rec, rec.length);
+                DatagramPacket dp = new DatagramPacket(rec, rec.length); //******* PODE TIRA DE DENTRO DO WHILE DAQUI PRA CIMA?****** TESTAR DEPOIS
                 ms.receive(dp);
                 msg = new String(dp.getData());
                 //Recebe hora, origem, destino, hora de término - "HH:mm:ss Norte Sul HH:mm:ss" até terminar de atravesar a via (msg).
                 
-                
-                
-                
-                System.out.println("Mensagem recebida: "+msg);
-                                
+                //adicionar ao vetor de strings que tem as mensagem dos 3 outros carros
+                if(!msgCarros.contains(msg)){//Se a mensagem ainda não foi adicionada
+                    msgCarros.add(msg);
+                    qtdMsg ++;
+                }                                    
             } catch (IOException ex) {//MulticastSocket
                 System.out.println("Erro ao criar o MulticastSocket");                                
             }catch(Exception e){
