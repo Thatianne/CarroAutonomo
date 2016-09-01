@@ -36,7 +36,8 @@ public class ControllerRecebe {
     public void recebe(){
         int qtdMsg = 0;
         String msg = null;
-        
+        //vai poder parar de esperar mensagens quando receber as mensagens dos outros 3 carros caso tenha
+        //Ver casos que tenha menos de 3 carros, pensar em condição de parada (poderia ser pelo tempo)
         while(qtdMsg < 3){                        
         
         try {
@@ -55,7 +56,7 @@ public class ControllerRecebe {
                 if(!msgCarros.contains(msg)){//Se a mensagem ainda não foi adicionada
                     msgCarros.add(msg);
                     qtdMsg ++;
-                }                                    
+                }                               
             } catch (IOException ex) {//MulticastSocket
                 System.out.println("Erro ao criar o MulticastSocket");                                
             }catch(Exception e){
