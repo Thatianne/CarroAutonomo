@@ -181,6 +181,187 @@ public class Cruzamento extends Application {
     }
 
     private void addCarros(Rectangle carro, String tipo, float posX, float posY, float tempoRestante) {
+        
+        Path caminho = new Path();
+        
+        System.out.println("***"+tipo+"***");
+        switch (tipo) {
+            //reto
+            case "Norte Sul": {                
+
+                
+                caminho.getElements().add(new MoveTo(posX, posY));
+                //animaReto(caminho, carro, posNorteX, posNorteY, posNorteX, posNorteY + 130,
+                  //      posNorteX, posSulY, this.tempoEspera, tempo);
+
+                break;
+            }
+
+            case "Sul Norte": {                
+
+                caminho.getElements().add(new MoveTo(posX, posY));
+                
+                //animaReto(caminho, carro, posSulX, posSulY, posSulX, posSulY - 130,
+                  //      posSulX, posNorteY, this.tempoEspera, tempo);
+
+                break;
+            }
+            case "Leste Oeste": {     
+                
+                caminho.getElements().add(new MoveTo(posX, posY));
+
+                //animaReto(caminho, carro, posLesteX, posLesteY, posLesteX - 130,
+                  //      posLesteY, posOesteX, posLesteY, this.tempoEspera, tempo);
+
+                break;
+            }
+            case "Oeste Leste": {                
+                System.out.println("entrooooou");
+                caminho.getElements().add(new MoveTo(posX, posY));
+                
+                //animaReto(caminho, carro, posOesteX, posOesteY, posOesteX + 130,
+                  //      posOesteY, posLesteX, posOesteY, this.tempoEspera, tempo);
+
+                break;
+            }
+            //direita
+            case "Norte Oeste": {//Ocupa o quadrante A
+
+                CubicCurveTo cubicTo = new CubicCurveTo();
+
+                cubicTo.setControlX1(posNorteX);
+                cubicTo.setControlY1(posOesteY - 60);
+                cubicTo.setControlX2(posNorteX);
+                cubicTo.setControlY2(posOesteY - 50);
+                cubicTo.setX(posOesteX);
+                cubicTo.setY(posLesteY);
+
+                animaCurva(caminho, carro, cubicTo, posNorteX, posNorteY, posNorteX, posNorteY + 130,
+                        this.tempoEspera, tempo);
+
+                break;
+            }
+            case "Leste Norte": {//quadrantes B
+
+                CubicCurveTo cubicTo = new CubicCurveTo();
+
+                cubicTo.setControlX1(posSulX);
+                cubicTo.setControlY1(posNorteY + 200);
+                cubicTo.setControlX2(posSulX);
+                cubicTo.setControlY2(posNorteY + 180);
+                cubicTo.setX(posSulX);
+                cubicTo.setY(posNorteY);
+
+                animaCurva(caminho, carro, cubicTo, posLesteX, posLesteY, posLesteX - 130,
+                        posLesteY, this.tempoEspera, tempo);
+
+                break;
+            }
+            case "Sul Leste": {//quadrante D
+
+                CubicCurveTo cubicTo = new CubicCurveTo();
+
+                cubicTo.setControlX1(posSulX);
+                cubicTo.setControlY1(posLesteY + 60);
+                cubicTo.setControlX2(posSulX);
+                cubicTo.setControlY2(posLesteY + 50);
+                cubicTo.setX(posLesteX);
+                cubicTo.setY(posOesteY);
+
+                animaCurva(caminho, carro, cubicTo, posSulX, posSulY, posSulX, posSulY - 130, this.tempoEspera, tempo);
+
+                break;
+            }
+            case "Oeste Sul": {//quadrante C                
+
+                CubicCurveTo cubicTo = new CubicCurveTo();
+
+                cubicTo.setControlX1(posNorteX);
+                cubicTo.setControlY1(posOesteY - 10);
+                cubicTo.setControlX2(posNorteX);
+                cubicTo.setControlY2(posOesteY);
+                cubicTo.setX(posNorteX);
+                cubicTo.setY(posSulY);
+
+                animaCurva(caminho, carro, cubicTo, posOesteX, posOesteY, posOesteX + 130, posOesteY,
+                        this.tempoEspera, tempo);
+
+                break;
+            }
+            //esquerda
+            case "Norte Leste": {//ocupa os quadrantes A, C e D
+
+                CubicCurveTo cubicTo = new CubicCurveTo();
+
+                cubicTo.setControlX1(posNorteX);
+                cubicTo.setControlY1(posOesteY + 80);
+                cubicTo.setControlX2(posNorteX);
+                cubicTo.setControlY2(posOesteY - 20);
+                cubicTo.setX(posLesteX);
+                cubicTo.setY(posOesteY);
+
+                animaCurva(caminho, carro, cubicTo, posNorteX, posNorteY, posNorteX, posNorteY + 130, this.tempoEspera, tempo);
+
+                break;
+            }
+            case "Leste Sul": {//ocupa os quadrantes A, B e C
+
+                CubicCurveTo cubicTo = new CubicCurveTo();
+
+                cubicTo.setControlX1(posNorteX - 50);
+                cubicTo.setControlY1(posLesteY);
+                cubicTo.setControlX2(posNorteX);
+                cubicTo.setControlY2(posLesteY);
+                cubicTo.setX(posNorteX);
+                cubicTo.setY(posSulY);
+
+                animaCurva(caminho, carro, cubicTo, posLesteX, posLesteY, posLesteX - 130, posLesteY, this.tempoEspera, tempo);
+
+                break;
+            }
+            case "Sul Oeste": {//ocupa os quadrantes A, B e D
+
+                CubicCurveTo cubicTo = new CubicCurveTo();
+
+                cubicTo.setControlX1(posSulX);
+                cubicTo.setControlY1(posLesteY - 50);
+                cubicTo.setControlX2(posSulX);
+                cubicTo.setControlY2(posLesteY);
+                cubicTo.setX(posOesteX);
+                cubicTo.setY(posLesteY);
+
+                animaCurva(caminho, carro, cubicTo, posSulX, posSulY, posSulX, posSulY - 130, this.tempoEspera, tempo);
+
+                break;
+            }
+            case "Oeste Norte": {//ocupa os quadrantes B, C e D
+
+                CubicCurveTo cubicTo = new CubicCurveTo();
+
+                cubicTo.setControlX1(posSulX + 50);
+                cubicTo.setControlY1(posOesteY + 25);
+                cubicTo.setControlX2(posSulX);
+                cubicTo.setControlY2(posOesteY + 25);
+                cubicTo.setX(posSulX);
+                cubicTo.setY(posNorteY);
+                
+                animaCurva(caminho, carro, cubicTo, posOesteX, posOesteY, posOesteX+130, posOesteY, this.tempoEspera, tempo);
+
+                break;
+            }
+            //origem == destino
+            default: {
+
+                root.getChildren().remove(carro);
+
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Dado errado");
+                alert.setHeaderText("Tentando desenhar outros carro");
+
+                alert.show();                
+                break;
+            }
+        }
 
     }
 
