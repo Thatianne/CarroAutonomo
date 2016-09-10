@@ -1,7 +1,6 @@
 package View;
 
 import Controller.Controller;
-import Controller.ControllerEnvia;
 import Model.Via;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,10 +33,10 @@ public class Cruzamento extends Application {
     private ArrayList<String> carros;
     private Group root;
     private Rectangle carro;
-    private final float posNorteX = 228;
+    private final float posNorteX = 228;//+15
     private final float posNorteY = 30;
     private final float posSulX = 290;
-    private final float posSulY = 465;
+    private final float posSulY = 465;//-20
     private final float posLesteX = 470;
     private final float posLesteY = 220;
     private final float posOesteX = 30;
@@ -85,8 +84,8 @@ public class Cruzamento extends Application {
 
         Image imgBussula = new Image("Bussula.png");
         ImageView ivBussula = new ImageView(imgBussula);
-        ivBussula.setFitHeight(200);
-        ivBussula.setFitWidth(200);
+        ivBussula.setFitHeight(170);
+        ivBussula.setFitWidth(170);
 
         VBox vbLayout = new VBox(10);
         vbLayout.setPadding(new Insets(15, 20, 15, 10));
@@ -138,12 +137,15 @@ public class Cruzamento extends Application {
                 } catch (IOException ex) {
                     Logger.getLogger(Cruzamento.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
             }
-
         });
 
-        vbLayout.getChildren().addAll(lbOrigem, cbOrigem, lbDestino, cbDestino, btStart, ivBussula);
+        Label msgs = new Label("Mensagens");
+        
+        TextArea ta = new TextArea();
+        ta.setMaxSize(210, 170);
+        ta.setEditable(false);
+        vbLayout.getChildren().addAll(lbOrigem, cbOrigem, lbDestino, cbDestino, btStart, ivBussula,msgs, ta);
 
         Scene cena = new Scene(hbLayout, 800, 500);
 
