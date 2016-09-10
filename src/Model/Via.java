@@ -16,5 +16,5 @@ public enum Via {
     
     public String getVia(){
         return this.nome;
-    }
+    }    
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controller;
 
 import Model.Via;
@@ -79,63 +74,5 @@ public class ControllerRecebe {
             }
 
         }
-    }
-
-    public void processa() {
-        recebe();
-        //depois de receber as mensagens dos outros carros, as decisões já podem ser tomadas
-        String seuDatagrama = horaInicial+" "+origem.getVia()+" "+destino.getVia()+" "+ segundos;
-        msgCarros.add(seuDatagrama);
-        
-        Collections.sort(msgCarros, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {//se o1 < o2 retorna -1, se o1 > o2 retorna 1, se o1 = o2 retorna 0
-                String horaS1, horaS2, minutoS1, minutoS2, segundoS1, segundoS2;
-                int hora1, hora2, minuto1, minuto2, segundo1, segundo2;
-                horaS1 = o1.substring(0, 2);
-                hora1 = Integer.parseInt(horaS1);
-                horaS2 = o2.substring(0, 2);
-                hora2 = Integer.parseInt(horaS2);
-                if (hora1 < hora2) {//é menor
-                    return -1;
-                } else {
-                    //pode ser maior
-                    minutoS1 = o1.substring(3, 5);
-                    minuto1 = Integer.parseInt(horaS1);
-                    minutoS2 = o2.substring(3, 5);
-                    minuto2 = Integer.parseInt(horaS2);
-                    if (minuto1 < minuto2) {//é menor
-                        return -1;
-                    } else {
-                        //pode ser maior
-                        segundoS1 = o1.substring(6, 8);
-                        segundo1 = Integer.parseInt(horaS1);
-                        segundoS2 = o2.substring(6, 8);
-                        segundo2 = Integer.parseInt(horaS2);
-                        if (segundo1 < segundo2) {//é menor
-                            return -1;
-                        } else {
-                            return 1;
-                        }
-                    }
-                }
-            }
-        });
-
-        //A lista está em ordem de preferência, precisa pegar o tempo que o carro vai ter que 
-        //"esperar" para os outros realizarem suas ações
-        String carro, tempoCarro;
-        int total = 0;
-        int index = msgCarros.indexOf(seuDatagrama);
-        for(int i=0; i<index; i++){
-            carro = msgCarros.get(i);
-            tempoCarro = carro.substring(carro.length() - 2, carro.length());
-            total = total + Integer.parseInt(tempoCarro);            
-        }
-        
-        /*tendo o tempo de "espera" é possível calcular a aceleração de freio do carro pois se tem 
-        a velocidade inicial e distância.
-        No Controller tem uma função para isso mas o carro precisa passar pelo cruzamento com 60km/h e 40km/h se for dobrar
-        */
     }
 }
