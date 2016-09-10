@@ -65,14 +65,24 @@ public class Controller {
             try {
                 //esperar por mensagem durante 300 milisegundos
                 
-                msg = receberMensagem();
+                msg = receberMensagem();                                
                 
-                if (msgCarros != null) {
-                    
+                if (msgCarros != null) {                    
                     if (msg != null) {
-                        if (!msgCarros.contains(msg)) {
+                        String rel = msg.substring(0, msg.indexOf(" "));
+                        //ver se o já tem o número do relógio lógico no array
+                        if(msgCarros.size()==0){
                             msgCarros.add(msg);
                         }
+                        for(int i=0; i<msgCarros.size(); i++){
+                            String m = msgCarros.get(i);
+                            StringTokenizer st = new StringTokenizer(m);
+                            String s = st.nextToken();
+                            if(!rel.equals(s)){
+                                msgCarros.add(msg);
+                            }
+                        }
+                        
                     }
                 }
 
@@ -87,14 +97,18 @@ public class Controller {
 
         }
         //Depois que recebeu as mensagens ai vai freiar se precisar e verificar se as rotas chocam
-        if (msgCarros != null) {
+        if (msgCarros != null && msgCarros.size()>1) {
             Collections.sort(msgCarros, new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {
-                    StringTokenizer st1 = new StringTokenizer(o1);
+                    StringTokenizer st1 = new StringTokenizer(o1);                    
                     StringTokenizer st2 = new StringTokenizer(o2);
-                    int log1 = Integer.parseInt(o1);
-                    int log2 = Integer.parseInt(o2);
+                    
+                    String oS1 = st1.nextToken();
+                    String oS2 = st2.nextToken();
+                    
+                    int log1 = Integer.parseInt(oS1);
+                    int log2 = Integer.parseInt(oS2);
                     if (log1 < log2) {
                         return -1;
                     } else {
