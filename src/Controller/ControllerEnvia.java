@@ -54,9 +54,10 @@ public class ControllerEnvia implements Runnable {
         long inicio = System.currentTimeMillis();
         
         while (true) {
-
-            x = carro.getLocalToSceneTransform().getTx();
-            y = carro.getLocalToSceneTransform().getTy();
+            
+            x = carro.getLocalToParentTransform().getTx();
+            y = carro.getLocalToParentTransform().getTy();
+                      
 
             try {
                 //mandar: relogioLogico tempoQueVaiDemorar posicaoX posicaoY ViaOrigem ViaDestino
@@ -74,7 +75,9 @@ public class ControllerEnvia implements Runnable {
                 dSocket.send(dp);
                 
                 System.out.println(new String(dp.getData()));
-
+                if(tempo < 0){
+                    break;
+                }
                 Thread.sleep(50);
             } catch (InterruptedException ex) {
                 System.out.println("deu ruim");
