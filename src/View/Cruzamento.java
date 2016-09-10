@@ -64,8 +64,6 @@ public class Cruzamento extends Application {
     public void start(Stage stage) throws Exception {
         //faz a tela sem nenhum carro        
         prepara(stage);
-        //movimentar carro
-        //movimentar(stage);
 
     }
 
@@ -124,15 +122,10 @@ public class Cruzamento extends Application {
                 try {
                     controller = new Controller(carro, origem, destino);
                     carros = controller.escutaCarros();
-                } catch (IOException ex) {
-                    Logger.getLogger(Cruzamento.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                //desenhar carros dos quais recebeu mensagens
-                if (carros != null) {
-                    desenharCarros(stage, carros);
-                }
-
-                try {
+                    //desenhar carros dos quais recebeu mensagens
+                    if (carros != null) {
+                        desenharCarros(stage, carros);
+                    }
                     animar(carro, origem + " " + destino, tempoEspera);
                 } catch (IOException ex) {
                     Logger.getLogger(Cruzamento.class.getName()).log(Level.SEVERE, null, ex);
@@ -189,184 +182,6 @@ public class Cruzamento extends Application {
 
     private void addCarros(Rectangle carro, String tipo, float posX, float posY, float tempoRestante) {
 
-        Path caminho = new Path();
-
-        float tempo = tempoRestante;
-
-        switch (tipo) {
-            //reto
-            case "Norte Sul": {
-
-                caminho.getElements().add(new MoveTo(posX, posY));//começa
-                caminho.getElements().add(new LineTo(posNorteX, posSulY));//para
-
-                if (posY > posNorteY + 130) {//passou da área crítica
-
-                }
-
-                break;
-            }
-
-            case "Sul Norte": {
-
-                caminho.getElements().add(new MoveTo(posX, posY));
-                caminho.getElements().add(new LineTo(posSulX, posNorteY));
-
-                break;
-            }
-            case "Leste Oeste": {
-
-                caminho.getElements().add(new MoveTo(posX, posY));
-                caminho.getElements().add(new LineTo(posOesteX, posLesteY));
-
-                break;
-            }
-            case "Oeste Leste": {
-
-                caminho.getElements().add(new MoveTo(posX, posY));
-                caminho.getElements().add(new LineTo(posLesteX, posOesteY));
-
-                break;
-            }
-            //direita
-            case "Norte Oeste": {//Ocupa o quadrante A
-
-                caminho.getElements().add(new MoveTo(posX, posY));//começa
-
-                CubicCurveTo cubicTo = new CubicCurveTo();
-
-                cubicTo.setControlX1(posNorteX);
-                cubicTo.setControlY1(posOesteY - 60);
-                cubicTo.setControlX2(posNorteX);
-                cubicTo.setControlY2(posOesteY - 50);
-                cubicTo.setX(posOesteX);
-                cubicTo.setY(posLesteY);
-
-                caminho.getElements().add(cubicTo);
-
-                break;
-            }
-            case "Leste Norte": {//quadrantes B
-
-                caminho.getElements().add(new MoveTo(posX, posY));//começa                
-
-                CubicCurveTo cubicTo = new CubicCurveTo();
-
-                cubicTo.setControlX1(posSulX);
-                cubicTo.setControlY1(posNorteY + 200);
-                cubicTo.setControlX2(posSulX);
-                cubicTo.setControlY2(posNorteY + 180);
-                cubicTo.setX(posSulX);
-                cubicTo.setY(posNorteY);
-
-                break;
-            }
-            case "Sul Leste": {//quadrante D
-
-                caminho.getElements().add(new MoveTo(posX, posY));//começa
-
-                CubicCurveTo cubicTo = new CubicCurveTo();
-
-                cubicTo.setControlX1(posSulX);
-                cubicTo.setControlY1(posLesteY + 60);
-                cubicTo.setControlX2(posSulX);
-                cubicTo.setControlY2(posLesteY + 50);
-                cubicTo.setX(posLesteX);
-                cubicTo.setY(posOesteY);
-
-                caminho.getElements().add(cubicTo);
-                break;
-            }
-            case "Oeste Sul": {//quadrante C
-
-                caminho.getElements().add(new MoveTo(posX, posY));
-
-                CubicCurveTo cubicTo = new CubicCurveTo();
-
-                cubicTo.setControlX1(posNorteX);
-                cubicTo.setControlY1(posOesteY - 10);
-                cubicTo.setControlX2(posNorteX);
-                cubicTo.setControlY2(posOesteY);
-                cubicTo.setX(posNorteX);
-                cubicTo.setY(posSulY);
-
-                caminho.getElements().add(cubicTo);
-
-                break;
-            }
-            //esquerda
-            case "Norte Leste": {//ocupa os quadrantes A, C e D
-
-                caminho.getElements().add(new MoveTo(posX, posY));
-
-                CubicCurveTo cubicTo = new CubicCurveTo();
-
-                cubicTo.setControlX1(posNorteX);
-                cubicTo.setControlY1(posOesteY + 110);
-                cubicTo.setControlX2(posNorteX);
-                cubicTo.setControlY2(posOesteY - 20);
-                cubicTo.setX(posLesteX);
-                cubicTo.setY(posOesteY);
-
-                caminho.getElements().add(cubicTo);
-
-                break;
-            }
-            case "Leste Sul": {//ocupa os quadrantes A, B e C
-
-                caminho.getElements().add(new MoveTo(posX, posY));
-
-                CubicCurveTo cubicTo = new CubicCurveTo();
-
-                cubicTo.setControlX1(posNorteX - 90);
-                cubicTo.setControlY1(posLesteY);
-                cubicTo.setControlX2(posNorteX);
-                cubicTo.setControlY2(posLesteY);
-                cubicTo.setX(posNorteX);
-                cubicTo.setY(posSulY);
-
-                caminho.getElements().add(cubicTo);
-
-                break;
-            }
-            case "Sul Oeste": {//ocupa os quadrantes A, B e D
-
-                caminho.getElements().add(new MoveTo(posX, posY));
-
-                CubicCurveTo cubicTo = new CubicCurveTo();
-
-                cubicTo.setControlX1(posSulX);
-                cubicTo.setControlY1(posLesteY - 90);
-                cubicTo.setControlX2(posSulX);
-                cubicTo.setControlY2(posLesteY);
-                cubicTo.setX(posOesteX);
-                cubicTo.setY(posLesteY);
-
-                caminho.getElements().add(cubicTo);
-
-                break;
-            }
-            case "Oeste Norte": {//ocupa os quadrantes B, C e D
-
-                caminho.getElements().add(new MoveTo(posX, posY));
-
-                CubicCurveTo cubicTo = new CubicCurveTo();
-
-                cubicTo.setControlX1(posSulX + 80);
-                cubicTo.setControlY1(posOesteY + 25);
-                cubicTo.setControlX2(posSulX);
-                cubicTo.setControlY2(posOesteY + 25);
-                cubicTo.setX(posSulX);
-                cubicTo.setY(posNorteY);
-
-                caminho.getElements().add(cubicTo);
-
-                break;
-            }
-        }
-
-        setPath(caminho, carro, tempo);
-
     }
 
     private void criarCarro(Stage stage, Group root) {
@@ -377,19 +192,70 @@ public class Cruzamento extends Application {
 
     }
 
+    private void animaReto(Path caminho, Rectangle carro, float comecoX, float comecoY, float paradaX, float paradaY,
+            float fimX, float fimY, float tempoEsp, float tempo) {
+
+        caminho.getElements().add(new MoveTo(comecoX, comecoY));//começa
+
+        //espera no cruzamento
+        caminho.getElements().add(new LineTo(paradaX, paradaY));//pausa
+
+        PathTransition pt = setPath(caminho, carro, tempoEsp);
+
+        caminho.getElements().clear();
+
+        pt.setOnFinished(evento -> {
+            caminho.getElements().add(new MoveTo(paradaX, paradaY));//pausa
+
+            caminho.getElements().add(new LineTo(fimX, fimY));//fim
+
+            PathTransition pt1 = setPath(caminho, carro, tempo);
+            pt1.setOnFinished(ev -> {
+                root.getChildren().remove(carro);
+            });
+
+        });
+
+    }
+
+    private void animaCurva(Path caminho, Rectangle carro, CubicCurveTo cct, float comecoX, float comecoY,
+            float paradaX, float paradaY, float tempoEsp, float tempo) {
+
+        caminho.getElements().add(new MoveTo(comecoX, comecoY));//começa
+
+        caminho.getElements().add(new LineTo(paradaX, paradaY));
+
+        PathTransition pt = setPath(caminho, carro, tempoEsp);
+
+        caminho.getElements().clear();
+
+        pt.setOnFinished(evento -> {
+
+            caminho.getElements().add(new MoveTo(paradaX, paradaY));
+
+            caminho.getElements().add(cct);
+
+            PathTransition pt1 = setPath(caminho, carro, tempo);
+            pt1.setOnFinished(ev -> {
+                root.getChildren().remove(carro);
+            });
+        });
+
+    }
+
     public void animar(Rectangle carro, String tipo, float tempoEspera) throws IOException {
         Via origem = null, destino = null;
 
         boolean certo = true;
 
-        int reto = 4000;
-        int direita = 6000;
-        int esquerda = 8000;
+        int reto = 2000;
+        int direita = 4000;
+        int esquerda = 6000;
 
         Path caminho = new Path();
 
         if (this.tempoEspera == 0) {
-            this.tempoEspera = 3000;
+            this.tempoEspera = 2000;
         }
 
         switch (tipo) {
@@ -401,26 +267,8 @@ public class Cruzamento extends Application {
                 origem = Via.NORTE;
                 destino = Via.SUL;
 
-                caminho.getElements().add(new MoveTo(posNorteX, posNorteY));//começa
-                //espera no cruzamento
-
-                caminho.getElements().add((new LineTo(posNorteX, posNorteY + 130)));
-
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
-
-                caminho.getElements().clear();
-
-                pt.setOnFinished(evento -> {
-                    caminho.getElements().add(new MoveTo(posNorteX, posNorteY + 130));//começa
-
-                    caminho.getElements().add(new LineTo(posNorteX, posSulY));//para
-
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-
-                });
+                animaReto(caminho, carro, posNorteX, posNorteY, posNorteX, posNorteY + 130,
+                        posNorteX, posSulY, this.tempoEspera, tempo);
 
                 break;
             }
@@ -432,47 +280,20 @@ public class Cruzamento extends Application {
                 origem = Via.SUL;
                 destino = Via.NORTE;
 
-                caminho.getElements().add(new MoveTo(posSulX, posSulY));
-                caminho.getElements().add(new LineTo(posSulX, posSulY - 130));
-
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
-
-                caminho.getElements().clear();
-
-                pt.setOnFinished(evento -> {
-
-                    caminho.getElements().add(new MoveTo(posSulX, posSulY - 130));
-                    caminho.getElements().add(new LineTo(posSulX, posNorteY));
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-                });
+                animaReto(caminho, carro, posSulX, posSulY, posSulX, posSulY - 130,
+                        posSulX, posNorteY, this.tempoEspera, tempo);
 
                 break;
             }
             case "Leste Oeste": {
 
+                tempo = reto;
+
                 origem = Via.LESTE;
                 destino = Via.OESTE;
 
-                caminho.getElements().add(new MoveTo(posLesteX, posLesteY));
-                caminho.getElements().add(new LineTo(posLesteX - 130, posLesteY));
-                tempo = reto;
-
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
-
-                caminho.getElements().clear();
-
-                pt.setOnFinished(evento -> {
-                    caminho.getElements().add(new MoveTo(posLesteX - 130, posLesteY));
-                    caminho.getElements().add(new LineTo(posOesteX, posLesteY));
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-                });
+                animaReto(caminho, carro, posLesteX, posLesteY, posLesteX - 130,
+                        posLesteY, posOesteX, posLesteY, this.tempoEspera, tempo);
 
                 break;
             }
@@ -483,21 +304,8 @@ public class Cruzamento extends Application {
                 origem = Via.OESTE;
                 destino = Via.LESTE;
 
-                caminho.getElements().add(new MoveTo(posOesteX, posOesteY));
-                caminho.getElements().add(new MoveTo(posOesteX + 130, posOesteY));
-
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
-                caminho.getElements().clear();
-
-                pt.setOnFinished(evento -> {
-                    caminho.getElements().add(new MoveTo(posOesteX + 130, posOesteY));
-                    caminho.getElements().add(new LineTo(posLesteX, posOesteY));
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-                });
+                animaReto(caminho, carro, posOesteX, posOesteY, posOesteX + 130,
+                        posOesteY, posLesteX, posOesteY, this.tempoEspera, tempo);
 
                 break;
             }
@@ -509,34 +317,17 @@ public class Cruzamento extends Application {
                 origem = Via.NORTE;
                 destino = Via.OESTE;
 
-                caminho.getElements().add(new MoveTo(posNorteX, posNorteY));//começa
+                CubicCurveTo cubicTo = new CubicCurveTo();
 
-                caminho.getElements().add((new LineTo(posNorteX, posNorteY + 130)));
+                cubicTo.setControlX1(posNorteX);
+                cubicTo.setControlY1(posOesteY - 60);
+                cubicTo.setControlX2(posNorteX);
+                cubicTo.setControlY2(posOesteY - 50);
+                cubicTo.setX(posOesteX);
+                cubicTo.setY(posLesteY);
 
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
-
-                caminho.getElements().clear();
-
-                pt.setOnFinished(evento -> {
-
-                    caminho.getElements().add(new MoveTo(posNorteX, posNorteY + 130));
-
-                    CubicCurveTo cubicTo = new CubicCurveTo();
-
-                    cubicTo.setControlX1(posNorteX);
-                    cubicTo.setControlY1(posOesteY - 60);
-                    cubicTo.setControlX2(posNorteX);
-                    cubicTo.setControlY2(posOesteY - 50);
-                    cubicTo.setX(posOesteX);
-                    cubicTo.setY(posLesteY);
-
-                    caminho.getElements().add(cubicTo);
-
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-                });
+                animaCurva(caminho, carro, cubicTo, posNorteX, posNorteY, posNorteX, posNorteY + 130,
+                        this.tempoEspera, tempo);
 
                 break;
             }
@@ -547,34 +338,17 @@ public class Cruzamento extends Application {
                 origem = Via.LESTE;
                 destino = Via.NORTE;
 
-                caminho.getElements().add(new MoveTo(posLesteX, posLesteY));//começa                
-                caminho.getElements().add((new LineTo(posLesteX - 130, posLesteY)));
+                CubicCurveTo cubicTo = new CubicCurveTo();
 
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
+                cubicTo.setControlX1(posSulX);
+                cubicTo.setControlY1(posNorteY + 200);
+                cubicTo.setControlX2(posSulX);
+                cubicTo.setControlY2(posNorteY + 180);
+                cubicTo.setX(posSulX);
+                cubicTo.setY(posNorteY);
 
-                caminho.getElements().clear();
-
-                pt.setOnFinished(evento -> {
-
-                    caminho.getElements().add(new MoveTo(posLesteX - 130, posLesteY));
-
-                    CubicCurveTo cubicTo = new CubicCurveTo();
-
-                    cubicTo.setControlX1(posSulX);
-                    cubicTo.setControlY1(posNorteY + 200);
-                    cubicTo.setControlX2(posSulX);
-                    cubicTo.setControlY2(posNorteY + 180);
-                    cubicTo.setX(posSulX);
-                    cubicTo.setY(posNorteY);
-
-                    caminho.getElements().add(cubicTo);
-
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-
-                });
+                animaCurva(caminho, carro, cubicTo, posLesteX, posLesteY, posLesteX - 130,
+                        posLesteY, this.tempoEspera, tempo);
 
                 break;
             }
@@ -585,33 +359,16 @@ public class Cruzamento extends Application {
                 origem = Via.SUL;
                 destino = Via.LESTE;
 
-                caminho.getElements().add(new MoveTo(posSulX, posSulY));//começa
-                caminho.getElements().add(new LineTo(posSulX, posSulY - 130));
+                CubicCurveTo cubicTo = new CubicCurveTo();
 
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
+                cubicTo.setControlX1(posSulX);
+                cubicTo.setControlY1(posLesteY + 60);
+                cubicTo.setControlX2(posSulX);
+                cubicTo.setControlY2(posLesteY + 50);
+                cubicTo.setX(posLesteX);
+                cubicTo.setY(posOesteY);
 
-                caminho.getElements().clear();
-
-                pt.setOnFinished(evento -> {
-
-                    caminho.getElements().add(new MoveTo(posSulX, posSulY - 130));
-                    CubicCurveTo cubicTo = new CubicCurveTo();
-
-                    cubicTo.setControlX1(posSulX);
-                    cubicTo.setControlY1(posLesteY + 60);
-                    cubicTo.setControlX2(posSulX);
-                    cubicTo.setControlY2(posLesteY + 50);
-                    cubicTo.setX(posLesteX);
-                    cubicTo.setY(posOesteY);
-
-                    caminho.getElements().add(cubicTo);
-
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-                });
+                animaCurva(caminho, carro, cubicTo, posSulX, posSulY, posSulX, posSulY - 130, this.tempoEspera, tempo);
 
                 break;
             }
@@ -622,32 +379,17 @@ public class Cruzamento extends Application {
                 origem = Via.OESTE;
                 destino = Via.SUL;
 
-                caminho.getElements().add(new MoveTo(posOesteX, posOesteY));
-                caminho.getElements().add(new LineTo(posOesteX + 130, posOesteY));
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
+                CubicCurveTo cubicTo = new CubicCurveTo();
 
-                caminho.getElements().clear();
+                cubicTo.setControlX1(posNorteX);
+                cubicTo.setControlY1(posOesteY - 10);
+                cubicTo.setControlX2(posNorteX);
+                cubicTo.setControlY2(posOesteY);
+                cubicTo.setX(posNorteX);
+                cubicTo.setY(posSulY);
 
-                pt.setOnFinished(evento -> {
-
-                    caminho.getElements().add(new MoveTo(posOesteX + 130, posOesteY));
-                    CubicCurveTo cubicTo = new CubicCurveTo();
-
-                    cubicTo.setControlX1(posNorteX);
-                    cubicTo.setControlY1(posOesteY - 10);
-                    cubicTo.setControlX2(posNorteX);
-                    cubicTo.setControlY2(posOesteY);
-                    cubicTo.setX(posNorteX);
-                    cubicTo.setY(posSulY);
-
-                    caminho.getElements().add(cubicTo);
-
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-                });
+                animaCurva(caminho, carro, cubicTo, posOesteX, posOesteY, posOesteX + 130, posOesteY,
+                        this.tempoEspera, tempo);
 
                 break;
             }
@@ -659,33 +401,16 @@ public class Cruzamento extends Application {
                 origem = Via.NORTE;
                 destino = Via.LESTE;
 
-                caminho.getElements().add(new MoveTo(posNorteX, posNorteY));
-                caminho.getElements().add(new LineTo(posNorteX, posNorteY + 130));
+                CubicCurveTo cubicTo = new CubicCurveTo();
 
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
+                cubicTo.setControlX1(posNorteX);
+                cubicTo.setControlY1(posOesteY + 80);
+                cubicTo.setControlX2(posNorteX);
+                cubicTo.setControlY2(posOesteY - 20);
+                cubicTo.setX(posLesteX);
+                cubicTo.setY(posOesteY);
 
-                caminho.getElements().clear();
-
-                pt.setOnFinished(evento -> {
-                    caminho.getElements().add(new MoveTo(posNorteX, posNorteY + 130));
-                    CubicCurveTo cubicTo = new CubicCurveTo();
-
-                    cubicTo.setControlX1(posNorteX);
-                    cubicTo.setControlY1(posOesteY + 80);
-                    cubicTo.setControlX2(posNorteX);
-                    cubicTo.setControlY2(posOesteY - 20);
-                    cubicTo.setX(posLesteX);
-                    cubicTo.setY(posOesteY);
-
-                    caminho.getElements().add(cubicTo);
-
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-
-                });
+                animaCurva(caminho, carro, cubicTo, posNorteX, posNorteY, posNorteX, posNorteY + 130, this.tempoEspera, tempo);
 
                 break;
             }
@@ -696,33 +421,16 @@ public class Cruzamento extends Application {
                 origem = Via.LESTE;
                 destino = Via.SUL;
 
-                caminho.getElements().add(new MoveTo(posLesteX, posLesteY));
-                caminho.getElements().add(new LineTo(posLesteX - 130, posLesteY));
+                CubicCurveTo cubicTo = new CubicCurveTo();
 
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
+                cubicTo.setControlX1(posNorteX - 50);
+                cubicTo.setControlY1(posLesteY);
+                cubicTo.setControlX2(posNorteX);
+                cubicTo.setControlY2(posLesteY);
+                cubicTo.setX(posNorteX);
+                cubicTo.setY(posSulY);
 
-                caminho.getElements().clear();
-
-                pt.setOnFinished(evento -> {
-
-                    caminho.getElements().add(new MoveTo(posLesteX - 130, posLesteY));
-                    CubicCurveTo cubicTo = new CubicCurveTo();
-
-                    cubicTo.setControlX1(posNorteX - 50);
-                    cubicTo.setControlY1(posLesteY);
-                    cubicTo.setControlX2(posNorteX);
-                    cubicTo.setControlY2(posLesteY);
-                    cubicTo.setX(posNorteX);
-                    cubicTo.setY(posSulY);
-
-                    caminho.getElements().add(cubicTo);
-
-                    PathTransition pt1 = setPath(caminho, carro, this.tempo);
-
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-                });
+                animaCurva(caminho, carro, cubicTo, posLesteX, posLesteY, posLesteX - 130, posLesteY, this.tempoEspera, tempo);
 
                 break;
             }
@@ -733,32 +441,16 @@ public class Cruzamento extends Application {
                 origem = Via.SUL;
                 destino = Via.OESTE;
 
-                caminho.getElements().add(new MoveTo(posSulX, posSulY));
-                caminho.getElements().add(new LineTo(posSulX, posSulY - 130));
+                CubicCurveTo cubicTo = new CubicCurveTo();
 
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
+                cubicTo.setControlX1(posSulX);
+                cubicTo.setControlY1(posLesteY - 50);
+                cubicTo.setControlX2(posSulX);
+                cubicTo.setControlY2(posLesteY);
+                cubicTo.setX(posOesteX);
+                cubicTo.setY(posLesteY);
 
-                caminho.getElements().clear();
-                pt.setOnFinished(evento -> {
-
-                    caminho.getElements().add(new MoveTo(posSulX, posSulY - 130));
-                    CubicCurveTo cubicTo = new CubicCurveTo();
-
-                    cubicTo.setControlX1(posSulX);
-                    cubicTo.setControlY1(posLesteY - 50);
-                    cubicTo.setControlX2(posSulX);
-                    cubicTo.setControlY2(posLesteY);
-                    cubicTo.setX(posOesteX);
-                    cubicTo.setY(posLesteY);
-
-                    caminho.getElements().add(cubicTo);
-
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-                });
+                animaCurva(caminho, carro, cubicTo, posSulX, posSulY, posSulX, posSulY - 130, this.tempoEspera, tempo);
 
                 break;
             }
@@ -769,32 +461,16 @@ public class Cruzamento extends Application {
                 origem = Via.OESTE;
                 destino = Via.NORTE;
 
-                caminho.getElements().add(new MoveTo(posOesteX, posOesteY));
-                caminho.getElements().add(new LineTo(posOesteX + 130, posOesteY));
+                CubicCurveTo cubicTo = new CubicCurveTo();
 
-                PathTransition pt = setPath(caminho, carro, this.tempoEspera);
-
-                caminho.getElements().clear();
-
-                pt.setOnFinished(evento -> {
-                    caminho.getElements().add(new MoveTo(posOesteX + 130, posOesteY));
-                    CubicCurveTo cubicTo = new CubicCurveTo();
-
-                    cubicTo.setControlX1(posSulX + 50);
-                    cubicTo.setControlY1(posOesteY + 25);
-                    cubicTo.setControlX2(posSulX);
-                    cubicTo.setControlY2(posOesteY + 25);
-                    cubicTo.setX(posSulX);
-                    cubicTo.setY(posNorteY);
-
-                    caminho.getElements().add(cubicTo);
-                    
-                    PathTransition pt1 = setPath(caminho, carro, tempo);
-                    
-                    pt1.setOnFinished(ev -> {
-                        root.getChildren().remove(carro);
-                    });
-                });
+                cubicTo.setControlX1(posSulX + 50);
+                cubicTo.setControlY1(posOesteY + 25);
+                cubicTo.setControlX2(posSulX);
+                cubicTo.setControlY2(posOesteY + 25);
+                cubicTo.setX(posSulX);
+                cubicTo.setY(posNorteY);
+                
+                animaCurva(caminho, carro, cubicTo, posOesteX, posOesteY, posOesteX+130, posOesteY, this.tempoEspera, tempo);
 
                 break;
             }
