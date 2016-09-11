@@ -26,7 +26,7 @@ public class Controller {
     private String destinoString;
 
     private final String grupo = "239.0.0.1";
-    private long tempo1 = 2000;
+    private long tempo1 = 1000;
     private String origem;
     private String destino;
     private int preferencia;
@@ -166,9 +166,9 @@ public class Controller {
         if(n.equals("Norte Sul") || n.equals("Sul Norte") || n.equals("Leste Oeste") || n.equals("Oeste Leste")){
             tempo = 2000;            
         }else if(n.equals("Norte Oeste") || n.equals("Leste Norte")|| n.equals("Sul Leste") || n.equals("Oeste Sul")){
-            tempo = 4000;
+            tempo = 3000;
         }else{
-            tempo = 5000;
+            tempo = 4000;
         }            
         
         return tempo;

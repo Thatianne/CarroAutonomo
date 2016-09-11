@@ -242,8 +242,8 @@ public class Cruzamento extends Application {
         Path caminho = new Path();
 
         int reto = 2000;
-        int direita = 4000;
-        int esquerda = 5000;
+        int direita = 3000;
+        int esquerda = 4000;
 
         tipo = tipo.trim();
         System.out.println(tipo);
@@ -536,13 +536,13 @@ public class Cruzamento extends Application {
         boolean certo = true;
 
         int reto = 2000;
-        int direita = 4000;
-        int esquerda = 5000;
+        int direita = 3000;
+        int esquerda = 4000;
 
         Path caminho = new Path();
 
         if (this.tempoEspera == 0) {
-            this.tempoEspera = 2000;
+            this.tempoEspera = 1000;
         }
 
         switch (tipo) {
