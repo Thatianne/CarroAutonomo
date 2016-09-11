@@ -175,11 +175,30 @@ public class Cruzamento extends Application {
             tempoRestante = Float.parseFloat(dados[1]);
 
             addCarros(c, dados[4] + " " + dados[5], posX, posY, tempoRestante);
-            this.tempoEspera = tempoTotal;//pega o tempo do ultimo carro
+            this.tempoEspera = tempoRestante;//pega o tempo do ultimo carro
+
+            System.out.println("Tempo: " + tempoEspera);
 
             //tempoTotal = tempoTotal + tempoRestante;
         }
         //this.tempoEspera = tempoTotal;
+    }
+
+    private void animaRetoSemParada(Path caminho, Rectangle carro, float posInicialX, float posInicialY,
+            float posFinalX, float posFinalY, float tempo) {
+        caminho.getElements().add(new MoveTo(posInicialX, posInicialY));//começa
+
+        //espera no cruzamento
+        caminho.getElements().add(new LineTo(posFinalX, posFinalY));//pausa
+
+        PathTransition pt = setPath(caminho, carro, tempo);
+
+        caminho.getElements().clear();
+
+        pt.setOnFinished(evento -> {
+
+            root.getChildren().remove(carro);
+        });
     }
 
     private void addCarros(Rectangle carro, String tipo, float posX, float posY, float tempoRestante) {
@@ -198,50 +217,44 @@ public class Cruzamento extends Application {
             case "Norte Sul": {
 
                 if (tempoRestante > reto) {
-                    animaReto(caminho, carro, posX-15, posY+20, posNorteX, posNorteY + 130,
-                            posNorteX, posSulY, tempoRestante-reto, reto);
+                    animaReto(caminho, carro, posX - 15, posY + 20, posNorteX, posNorteY + 130,
+                            posNorteX, posSulY, tempoRestante - reto, reto);
                 } else {
-
-                    caminho.getElements().add(new MoveTo(posX, posY));//começa
-
-                    //espera no cruzamento
-                    caminho.getElements().add(new LineTo(posNorteX, posSulY));//pausa
-
-                    PathTransition pt = setPath(caminho, carro, tempoRestante);
-
-                    caminho.getElements().clear();
-
-                    pt.setOnFinished(evento -> {
-                        
-                            root.getChildren().remove(carro);                        
-                    });
+                    animaRetoSemParada(caminho, carro, posX - 15, posY + 20, posNorteX, posNorteY + 130, tempoRestante);
                 }
-
                 break;
             }
 
             case "Sul Norte": {
 
-                caminho.getElements().add(new MoveTo(posX, posY));
+                if (tempoRestante > reto) {
+                    animaReto(caminho, carro, posX + 15, posY - 20, posSulX, posSulY - 130,
+                            posSulX, posNorteY, tempoRestante - reto, reto);
+                } else {
+                    animaRetoSemParada(caminho, carro, posX +15 , posY - 20, posSulX, posNorteY, tempoRestante);
+                }
 
-                //animaReto(caminho, carro, posSulX, posSulY, posSulX, posSulY - 130,
-                //      posSulX, posNorteY, this.tempoEspera, tempo);
                 break;
             }
-            case "Leste Oeste": {
-
-                caminho.getElements().add(new MoveTo(posX, posY));
-
-                //animaReto(caminho, carro, posLesteX, posLesteY, posLesteX - 130,
-                //      posLesteY, posOesteX, posLesteY, this.tempoEspera, tempo);
+            case "Leste Oeste": {                                
+                
+                if (tempoRestante > reto) {
+                    animaReto(caminho, carro, posX - 15, posY - 18, posLesteX - 130,
+                            posLesteY, posOesteX, posLesteY, tempoRestante - reto, reto);
+                } else {
+                    animaRetoSemParada(caminho, carro, posX - 15, posY - 18, posOesteX, posLesteY, tempoRestante);
+                }
                 break;
             }
-            case "Oeste Leste": {
-                System.out.println("entrooooou");
-                caminho.getElements().add(new MoveTo(posX, posY));
-
-                //animaReto(caminho, carro, posOesteX, posOesteY, posOesteX + 130,
-                //      posOesteY, posLesteX, posOesteY, this.tempoEspera, tempo);
+            case "Oeste Leste": {     
+                
+                if(tempoRestante > reto){
+                    animaReto(caminho, carro, posX + 15, posY + 18, posOesteX + 130,
+                      posOesteY, posLesteX, posOesteY, tempoRestante - reto, reto);
+                }else{
+                    animaRetoSemParada(caminho, carro, posX - 15, posY - 18, posLesteX, posOesteY, tempoRestante);
+                }                
+                
                 break;
             }
             //direita
