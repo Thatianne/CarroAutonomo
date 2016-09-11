@@ -136,6 +136,13 @@ public class Cruzamento extends Application {
                     } catch (IOException ex) {
                         Logger.getLogger(Cruzamento.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                } else {
+                    
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Dado errado");
+                    alert.setHeaderText("Escolha opções válidas");
+
+                    alert.show();
                 }
             }
         });
@@ -284,15 +291,14 @@ public class Cruzamento extends Application {
 
                 CubicCurveTo cubicTo = new CubicCurveTo();
 
-                    cubicTo.setControlX1(posNorteX);
-                    cubicTo.setControlY1(posOesteY - 60);
-                    cubicTo.setControlX2(posNorteX);
-                    cubicTo.setControlY2(posOesteY - 50);
-                    cubicTo.setX(posOesteX);
-                    cubicTo.setY(posLesteY);
-                
+                cubicTo.setControlX1(posNorteX);
+                cubicTo.setControlY1(posOesteY - 60);
+                cubicTo.setControlX2(posNorteX);
+                cubicTo.setControlY2(posOesteY - 50);
+                cubicTo.setX(posOesteX);
+                cubicTo.setY(posLesteY);
+
                 if (tempoRestante > direita) {
-                    
 
                     animaCurva(caminho, carro, cubicTo, posX - 15, posY - 20, posNorteX, posNorteY + 130,
                             tempoRestante - direita, direita);
@@ -313,12 +319,12 @@ public class Cruzamento extends Application {
                 cubicTo.setX(posSulX);
                 cubicTo.setY(posNorteY);
 
-                if(tempoRestante > direita){
+                if (tempoRestante > direita) {
                     animaCurva(caminho, carro, cubicTo, posX - 15, posY - 20, posLesteX - 130,
-                        posLesteY, tempoRestante - direita, direita);
-                }else{
+                            posLesteY, tempoRestante - direita, direita);
+                } else {
                     animaCurvaSemParada(caminho, carro, cubicTo, posX - 15, posY - 20, tempoRestante);
-                }                               
+                }
 
                 break;
             }
@@ -333,11 +339,11 @@ public class Cruzamento extends Application {
                 cubicTo.setX(posLesteX);
                 cubicTo.setY(posOesteY);
 
-                if(tempoRestante > direita){
+                if (tempoRestante > direita) {
                     animaCurva(caminho, carro, cubicTo, posX + 15, posY - 20, posSulX, posSulY - 130, tempoRestante - direita, direita);
-                }else{
-                    animaCurvaSemParada(caminho, carro, cubicTo, posX - 15, posY - 20, tempoRestante);                    
-                }                                
+                } else {
+                    animaCurvaSemParada(caminho, carro, cubicTo, posX + 15, posY - 20, tempoRestante);
+                }
 
                 break;
             }
@@ -352,10 +358,10 @@ public class Cruzamento extends Application {
                 cubicTo.setX(posNorteX);
                 cubicTo.setY(posSulY);
 
-                if(tempoRestante > direita){
+                if (tempoRestante > direita) {
                     animaCurva(caminho, carro, cubicTo, posX - 15, posY + 20, posOesteX + 130, posOesteY,
-                        tempoRestante - direita, direita);
-                }else{
+                            tempoRestante - direita, direita);
+                } else {
                     animaCurvaSemParada(caminho, carro, cubicTo, posX - 15, posY + 20, tempoRestante);
                 }
 
@@ -364,6 +370,7 @@ public class Cruzamento extends Application {
             //esquerda
             case "Norte Leste": {//ocupa os quadrantes A, C e D
 
+                System.out.println("Norte Leste ****");
                 CubicCurveTo cubicTo = new CubicCurveTo();
 
                 cubicTo.setControlX1(posNorteX);
@@ -373,7 +380,11 @@ public class Cruzamento extends Application {
                 cubicTo.setX(posLesteX);
                 cubicTo.setY(posOesteY);
 
-                animaCurva(caminho, carro, cubicTo, posNorteX, posNorteY, posNorteX, posNorteY + 130, this.tempoEspera, tempo);
+                if (tempoRestante > esquerda) {
+                    animaCurva(caminho, carro, cubicTo, posX - 15, posY + 20, posNorteX, posNorteY + 130, tempoRestante - esquerda, esquerda);
+                } else {
+                    animaCurvaSemParada(caminho, carro, cubicTo, posX - 15, posY + 20, tempoRestante);
+                }
 
                 break;
             }
@@ -388,7 +399,12 @@ public class Cruzamento extends Application {
                 cubicTo.setX(posNorteX);
                 cubicTo.setY(posSulY);
 
-                animaCurva(caminho, carro, cubicTo, posLesteX, posLesteY, posLesteX - 130, posLesteY, this.tempoEspera, tempo);
+                if (tempoRestante > esquerda) {
+                    animaCurva(caminho, carro, cubicTo, posX - 15, posY - 20, posLesteX - 130, posLesteY,
+                            tempoRestante - esquerda, esquerda);
+                } else {
+                    animaCurvaSemParada(caminho, carro, cubicTo, posX - 15, posY - 20, tempoRestante);
+                }
 
                 break;
             }
@@ -403,7 +419,11 @@ public class Cruzamento extends Application {
                 cubicTo.setX(posOesteX);
                 cubicTo.setY(posLesteY);
 
-                animaCurva(caminho, carro, cubicTo, posSulX, posSulY, posSulX, posSulY - 130, this.tempoEspera, tempo);
+                if (tempoRestante > esquerda) {
+                    animaCurva(caminho, carro, cubicTo, posX + 15, posY - 20, posSulX, posSulY - 130, tempoRestante - esquerda, esquerda);
+                } else {
+                    animaCurvaSemParada(caminho, carro, cubicTo, posX + 15, posY - 20, tempoRestante);
+                }
 
                 break;
             }
@@ -418,7 +438,12 @@ public class Cruzamento extends Application {
                 cubicTo.setX(posSulX);
                 cubicTo.setY(posNorteY);
 
-                animaCurva(caminho, carro, cubicTo, posOesteX, posOesteY, posOesteX + 130, posOesteY, this.tempoEspera, tempo);
+                if (tempoRestante > esquerda) {
+                    animaCurva(caminho, carro, cubicTo, posX - 15, posY + 20, posOesteX + 130, posOesteY,
+                            tempoRestante - esquerda, esquerda);
+                } else {
+                    animaCurvaSemParada(caminho, carro, cubicTo, posX - 15, posY + 20, tempoRestante);
+                }
 
                 break;
             }

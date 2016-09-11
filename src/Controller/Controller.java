@@ -1,8 +1,6 @@
 package Controller;
 
-import Model.Via;
 import java.io.IOException;
-import static java.lang.Math.pow;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -83,8 +81,7 @@ public class Controller {
                             if(!rel.equals(s)){
                                 msgCarros.add(msg);
                             }
-                        }
-                        
+                        }                        
                     }
                 }
 
@@ -171,7 +168,7 @@ public class Controller {
         }else if(n.equals("Norte Oeste") || n.equals("Leste Norte")|| n.equals("Sul Leste") || n.equals("Oeste Sul")){
             tempo = 4000;
         }else{
-            tempo = 6000;
+            tempo = 5000;
         }            
         
         return tempo;
