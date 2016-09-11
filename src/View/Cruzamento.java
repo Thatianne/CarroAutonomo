@@ -106,6 +106,12 @@ public class Cruzamento extends Application {
         ComboBox cbDestino = new ComboBox(opcoes);
         cbDestino.setValue("Escolha o destino");
 
+        Label msgs = new Label("Mensagens");
+
+        TextArea ta = new TextArea();
+        ta.setMaxSize(210, 220);
+        ta.setEditable(false);
+
         Button btStart = new Button("Start");
 
         btStart.setOnAction(new EventHandler<ActionEvent>() {
@@ -124,7 +130,7 @@ public class Cruzamento extends Application {
                         carros = controller.escutaCarros();
                         //desenhar carros dos quais recebeu mensagens
                         if (carros != null) {
-                            desenharCarros(stage, carros);
+                            desenharCarros(stage, carros, ta);
                         }
                         animar(c, origem + " " + destino, tempoEspera);
                     } catch (IOException ex) {
@@ -134,11 +140,6 @@ public class Cruzamento extends Application {
             }
         });
 
-        Label msgs = new Label("Mensagens");
-
-        TextArea ta = new TextArea();
-        ta.setMaxSize(210, 170);
-        ta.setEditable(false);
         vbLayout.getChildren().addAll(lbOrigem, cbOrigem, lbDestino, cbDestino, btStart, ivBussula, msgs, ta);
 
         Scene cena = new Scene(hbLayout, 800, 500);
@@ -149,7 +150,7 @@ public class Cruzamento extends Application {
         stage.show();
     }
 
-    private void desenharCarros(Stage stage, ArrayList<String> carros) {
+    private void desenharCarros(Stage stage, ArrayList<String> carros, TextArea ta) {
         String dados[] = new String[6];
         float posX, posY, tempoRestante;
         int j;
@@ -160,6 +161,9 @@ public class Cruzamento extends Application {
             //relogioLogico tempoQueVaiDemorar posicaoX posicaoY ViaOrigem ViaDestino
             //      0                 1            2        3        4          5
             StringTokenizer st = new StringTokenizer(carros.get(i));
+
+            ta.appendText(carros.get(i) + "\n");
+
             j = 0;
             while (st.hasMoreTokens()) {
                 dados[j] = st.nextToken();
@@ -201,13 +205,31 @@ public class Cruzamento extends Application {
         });
     }
 
+    private void animaCurvaSemParada(Path caminho, Rectangle carro, CubicCurveTo cct, float comecoX,
+            float comecoY, float tempo) {
+
+        caminho.getElements().add(new MoveTo(comecoX, comecoY));//começa
+
+        caminho.getElements().add(cct);
+
+        PathTransition pt = setPath(caminho, carro, tempo);
+
+        caminho.getElements().clear();
+
+        pt.setOnFinished(evento -> {
+
+            root.getChildren().remove(carro);
+
+        });
+    }
+
     private void addCarros(Rectangle carro, String tipo, float posX, float posY, float tempoRestante) {
 
         Path caminho = new Path();
 
         int reto = 2000;
         int direita = 4000;
-        int esquerda = 6000;
+        int esquerda = 5000;
 
         tipo = tipo.trim();
         System.out.println(tipo);
@@ -231,13 +253,13 @@ public class Cruzamento extends Application {
                     animaReto(caminho, carro, posX + 15, posY - 20, posSulX, posSulY - 130,
                             posSulX, posNorteY, tempoRestante - reto, reto);
                 } else {
-                    animaRetoSemParada(caminho, carro, posX +15 , posY - 20, posSulX, posNorteY, tempoRestante);
+                    animaRetoSemParada(caminho, carro, posX + 15, posY - 20, posSulX, posNorteY, tempoRestante);
                 }
 
                 break;
             }
-            case "Leste Oeste": {                                
-                
+            case "Leste Oeste": {
+
                 if (tempoRestante > reto) {
                     animaReto(caminho, carro, posX - 15, posY - 18, posLesteX - 130,
                             posLesteY, posOesteX, posLesteY, tempoRestante - reto, reto);
@@ -246,15 +268,15 @@ public class Cruzamento extends Application {
                 }
                 break;
             }
-            case "Oeste Leste": {     
-                
-                if(tempoRestante > reto){
+            case "Oeste Leste": {
+
+                if (tempoRestante > reto) {
                     animaReto(caminho, carro, posX + 15, posY + 18, posOesteX + 130,
-                      posOesteY, posLesteX, posOesteY, tempoRestante - reto, reto);
-                }else{
-                    animaRetoSemParada(caminho, carro, posX - 15, posY - 18, posLesteX, posOesteY, tempoRestante);
-                }                
-                
+                            posOesteY, posLesteX, posOesteY, tempoRestante - reto, reto);
+                } else {
+                    animaRetoSemParada(caminho, carro, posX + 15, posY + 18, posLesteX, posOesteY, tempoRestante);
+                }
+
                 break;
             }
             //direita
@@ -262,15 +284,21 @@ public class Cruzamento extends Application {
 
                 CubicCurveTo cubicTo = new CubicCurveTo();
 
-                cubicTo.setControlX1(posNorteX);
-                cubicTo.setControlY1(posOesteY - 60);
-                cubicTo.setControlX2(posNorteX);
-                cubicTo.setControlY2(posOesteY - 50);
-                cubicTo.setX(posOesteX);
-                cubicTo.setY(posLesteY);
+                    cubicTo.setControlX1(posNorteX);
+                    cubicTo.setControlY1(posOesteY - 60);
+                    cubicTo.setControlX2(posNorteX);
+                    cubicTo.setControlY2(posOesteY - 50);
+                    cubicTo.setX(posOesteX);
+                    cubicTo.setY(posLesteY);
+                
+                if (tempoRestante > direita) {
+                    
 
-                animaCurva(caminho, carro, cubicTo, posNorteX, posNorteY, posNorteX, posNorteY + 130,
-                        this.tempoEspera, tempo);
+                    animaCurva(caminho, carro, cubicTo, posX - 15, posY - 20, posNorteX, posNorteY + 130,
+                            tempoRestante - direita, direita);
+                } else {
+                    animaCurvaSemParada(caminho, carro, cubicTo, posX - 15, posY - 20, tempoRestante);
+                }
 
                 break;
             }
@@ -285,8 +313,12 @@ public class Cruzamento extends Application {
                 cubicTo.setX(posSulX);
                 cubicTo.setY(posNorteY);
 
-                animaCurva(caminho, carro, cubicTo, posLesteX, posLesteY, posLesteX - 130,
-                        posLesteY, this.tempoEspera, tempo);
+                if(tempoRestante > direita){
+                    animaCurva(caminho, carro, cubicTo, posX - 15, posY - 20, posLesteX - 130,
+                        posLesteY, tempoRestante - direita, direita);
+                }else{
+                    animaCurvaSemParada(caminho, carro, cubicTo, posX - 15, posY - 20, tempoRestante);
+                }                               
 
                 break;
             }
@@ -301,7 +333,11 @@ public class Cruzamento extends Application {
                 cubicTo.setX(posLesteX);
                 cubicTo.setY(posOesteY);
 
-                animaCurva(caminho, carro, cubicTo, posSulX, posSulY, posSulX, posSulY - 130, this.tempoEspera, tempo);
+                if(tempoRestante > direita){
+                    animaCurva(caminho, carro, cubicTo, posX + 15, posY - 20, posSulX, posSulY - 130, tempoRestante - direita, direita);
+                }else{
+                    animaCurvaSemParada(caminho, carro, cubicTo, posX - 15, posY - 20, tempoRestante);                    
+                }                                
 
                 break;
             }
@@ -316,8 +352,12 @@ public class Cruzamento extends Application {
                 cubicTo.setX(posNorteX);
                 cubicTo.setY(posSulY);
 
-                animaCurva(caminho, carro, cubicTo, posOesteX, posOesteY, posOesteX + 130, posOesteY,
-                        this.tempoEspera, tempo);
+                if(tempoRestante > direita){
+                    animaCurva(caminho, carro, cubicTo, posX - 15, posY + 20, posOesteX + 130, posOesteY,
+                        tempoRestante - direita, direita);
+                }else{
+                    animaCurvaSemParada(caminho, carro, cubicTo, posX - 15, posY + 20, tempoRestante);
+                }
 
                 break;
             }
@@ -465,7 +505,7 @@ public class Cruzamento extends Application {
 
         int reto = 2000;
         int direita = 4000;
-        int esquerda = 6000;
+        int esquerda = 5000;
 
         Path caminho = new Path();
 
