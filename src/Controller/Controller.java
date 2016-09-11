@@ -49,7 +49,9 @@ public class Controller {
     public ArrayList escutaCarros() throws IOException {
 
         this.ms = new MulticastSocket(5000);
+        
         ms.setSoTimeout(100);//tempo de espera de mensagem                        
+        
         InetAddress grp = InetAddress.getByName(this.grupo);
         ms.joinGroup(grp);
 
@@ -87,9 +89,7 @@ public class Controller {
                 }
 
                 fim = System.currentTimeMillis();
-                tempo = fim - inicio;
-
-                System.out.println(tempo);
+                tempo = fim - inicio;               
 
             } catch (IOException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);

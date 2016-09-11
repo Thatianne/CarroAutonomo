@@ -116,19 +116,20 @@ public class Cruzamento extends Application {
 
                 origem = cbOrigem.getValue().toString();
                 destino = cbDestino.getValue().toString();
+                if (!origem.equals(destino) && !origem.equals("Escolha a origem") && !destino.equals("Escolha o destino")) {
+                    criarCarro(stage);
 
-                criarCarro(stage, root);
-
-                try {
-                    controller = new Controller(carro, origem, destino);
-                    carros = controller.escutaCarros();
-                    //desenhar carros dos quais recebeu mensagens
-                    if (carros != null) {
-                        desenharCarros(stage, carros);
+                    try {
+                        controller = new Controller(carro, origem, destino);
+                        carros = controller.escutaCarros();
+                        //desenhar carros dos quais recebeu mensagens
+                        if (carros != null) {
+                            desenharCarros(stage, carros);
+                        }
+                        animar(carro, origem + " " + destino, tempoEspera);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Cruzamento.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    animar(carro, origem + " " + destino, tempoEspera);
-                } catch (IOException ex) {
-                    Logger.getLogger(Cruzamento.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -146,7 +147,6 @@ public class Cruzamento extends Application {
         stage.setScene(cena);
         stage.setResizable(false);
         stage.show();
-
     }
 
     private void desenharCarros(Stage stage, ArrayList<String> carros) {
@@ -166,62 +166,60 @@ public class Cruzamento extends Application {
             }
 
             //criar
-            criarCarro(stage, root);
+            criarCarro(stage);
+            
             //colocar na tela
-
             posX = Float.parseFloat(dados[2]);
             posY = Float.parseFloat(dados[3]);
             tempoRestante = Float.parseFloat(dados[1]);
 
             addCarros(carro, dados[4] + " " + dados[5], posX, posY, tempoRestante);
-            tempoTotal = tempoTotal + tempoRestante;
+            this.tempoEspera = tempoTotal;//pega o tempo do ultimo carro
+            
+            //tempoTotal = tempoTotal + tempoRestante;
 
         }
-        this.tempoEspera = tempoTotal;
+        //this.tempoEspera = tempoTotal;
     }
 
     private void addCarros(Rectangle carro, String tipo, float posX, float posY, float tempoRestante) {
-        
+
         Path caminho = new Path();
-        
-        System.out.println("***"+tipo+"***");
+
+        tipo = tipo.trim();
+        System.out.println(tipo);
+  
         switch (tipo) {
             //reto
-            case "Norte Sul": {                
+            case "Norte Sul": {               
 
-                
-                caminho.getElements().add(new MoveTo(posX, posY));
-                //animaReto(caminho, carro, posNorteX, posNorteY, posNorteX, posNorteY + 130,
-                  //      posNorteX, posSulY, this.tempoEspera, tempo);
-
+                animaReto(caminho, carro, posNorteX, posNorteY, posNorteX, posNorteY + 130,
+                      posNorteX, posSulY, this.tempoEspera, tempo);
                 break;
             }
 
-            case "Sul Norte": {                
+            case "Sul Norte": {
 
                 caminho.getElements().add(new MoveTo(posX, posY));
-                
+
                 //animaReto(caminho, carro, posSulX, posSulY, posSulX, posSulY - 130,
-                  //      posSulX, posNorteY, this.tempoEspera, tempo);
-
+                //      posSulX, posNorteY, this.tempoEspera, tempo);
                 break;
             }
-            case "Leste Oeste": {     
-                
+            case "Leste Oeste": {
+
                 caminho.getElements().add(new MoveTo(posX, posY));
 
                 //animaReto(caminho, carro, posLesteX, posLesteY, posLesteX - 130,
-                  //      posLesteY, posOesteX, posLesteY, this.tempoEspera, tempo);
-
+                //      posLesteY, posOesteX, posLesteY, this.tempoEspera, tempo);
                 break;
             }
-            case "Oeste Leste": {                
+            case "Oeste Leste": {
                 System.out.println("entrooooou");
                 caminho.getElements().add(new MoveTo(posX, posY));
-                
-                //animaReto(caminho, carro, posOesteX, posOesteY, posOesteX + 130,
-                  //      posOesteY, posLesteX, posOesteY, this.tempoEspera, tempo);
 
+                //animaReto(caminho, carro, posOesteX, posOesteY, posOesteX + 130,
+                //      posOesteY, posLesteX, posOesteY, this.tempoEspera, tempo);
                 break;
             }
             //direita
@@ -344,8 +342,8 @@ public class Cruzamento extends Application {
                 cubicTo.setControlY2(posOesteY + 25);
                 cubicTo.setX(posSulX);
                 cubicTo.setY(posNorteY);
-                
-                animaCurva(caminho, carro, cubicTo, posOesteX, posOesteY, posOesteX+130, posOesteY, this.tempoEspera, tempo);
+
+                animaCurva(caminho, carro, cubicTo, posOesteX, posOesteY, posOesteX + 130, posOesteY, this.tempoEspera, tempo);
 
                 break;
             }
@@ -358,18 +356,18 @@ public class Cruzamento extends Application {
                 alert.setTitle("Dado errado");
                 alert.setHeaderText("Tentando desenhar outros carro");
 
-                alert.show();                
+                alert.show();
                 break;
             }
         }
 
     }
 
-    private void criarCarro(Stage stage, Group root) {
-
+    private void criarCarro(Stage stage) {
+        Rectangle c;
         carro = new Rectangle(comprimento, largura, Color.CYAN);
-
-        root.getChildren().add(carro);
+        c = carro;
+        root.getChildren().add(c);
 
     }
 
@@ -650,8 +648,8 @@ public class Cruzamento extends Application {
                 cubicTo.setControlY2(posOesteY + 25);
                 cubicTo.setX(posSulX);
                 cubicTo.setY(posNorteY);
-                
-                animaCurva(caminho, carro, cubicTo, posOesteX, posOesteY, posOesteX+130, posOesteY, this.tempoEspera, tempo);
+
+                animaCurva(caminho, carro, cubicTo, posOesteX, posOesteY, posOesteX + 130, posOesteY, this.tempoEspera, tempo);
 
                 break;
             }

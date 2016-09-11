@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controller;
 
 import java.io.IOException;
@@ -74,7 +69,7 @@ public class ControllerEnvia implements Runnable {
                 DatagramPacket dp = new DatagramPacket(b, b.length, addr, this.porta);
                 dSocket.send(dp);
                 
-                System.out.println(new String(dp.getData()));
+                //System.out.println(new String(dp.getData()));
                 if(tempo < 0){
                     break;
                 }
