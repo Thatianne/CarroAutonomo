@@ -117,16 +117,16 @@ public class Cruzamento extends Application {
                 origem = cbOrigem.getValue().toString();
                 destino = cbDestino.getValue().toString();
                 if (!origem.equals(destino) && !origem.equals("Escolha a origem") && !destino.equals("Escolha o destino")) {
-                    criarCarro(stage);
+                    Rectangle c = criarCarro(stage);
 
                     try {
-                        controller = new Controller(carro, origem, destino);
+                        controller = new Controller(c, origem, destino);
                         carros = controller.escutaCarros();
                         //desenhar carros dos quais recebeu mensagens
                         if (carros != null) {
                             desenharCarros(stage, carros);
                         }
-                        animar(carro, origem + " " + destino, tempoEspera);
+                        animar(c, origem + " " + destino, tempoEspera);
                     } catch (IOException ex) {
                         Logger.getLogger(Cruzamento.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -154,6 +154,7 @@ public class Cruzamento extends Application {
         float posX, posY, tempoRestante;
         int j;
         float tempoTotal = 0;
+        Rectangle c;
 
         for (int i = 0; i < carros.size(); i++) {
             //relogioLogico tempoQueVaiDemorar posicaoX posicaoY ViaOrigem ViaDestino
@@ -166,18 +167,17 @@ public class Cruzamento extends Application {
             }
 
             //criar
-            criarCarro(stage);
-            
+            c = criarCarro(stage);
+
             //colocar na tela
             posX = Float.parseFloat(dados[2]);
             posY = Float.parseFloat(dados[3]);
             tempoRestante = Float.parseFloat(dados[1]);
 
-            addCarros(carro, dados[4] + " " + dados[5], posX, posY, tempoRestante);
+            addCarros(c, dados[4] + " " + dados[5], posX, posY, tempoRestante);
             this.tempoEspera = tempoTotal;//pega o tempo do ultimo carro
-            
-            //tempoTotal = tempoTotal + tempoRestante;
 
+            //tempoTotal = tempoTotal + tempoRestante;
         }
         //this.tempoEspera = tempoTotal;
     }
@@ -186,15 +186,37 @@ public class Cruzamento extends Application {
 
         Path caminho = new Path();
 
+        int reto = 2000;
+        int direita = 4000;
+        int esquerda = 6000;
+
         tipo = tipo.trim();
         System.out.println(tipo);
-  
+
         switch (tipo) {
             //reto
-            case "Norte Sul": {               
+            case "Norte Sul": {
 
-                animaReto(caminho, carro, posNorteX, posNorteY, posNorteX, posNorteY + 130,
-                      posNorteX, posSulY, this.tempoEspera, tempo);
+                if (tempoRestante > reto) {
+                    animaReto(caminho, carro, posX-15, posY+20, posNorteX, posNorteY + 130,
+                            posNorteX, posSulY, tempoRestante-reto, reto);
+                } else {
+
+                    caminho.getElements().add(new MoveTo(posX, posY));//começa
+
+                    //espera no cruzamento
+                    caminho.getElements().add(new LineTo(posNorteX, posSulY));//pausa
+
+                    PathTransition pt = setPath(caminho, carro, tempoRestante);
+
+                    caminho.getElements().clear();
+
+                    pt.setOnFinished(evento -> {
+                        
+                            root.getChildren().remove(carro);                        
+                    });
+                }
+
                 break;
             }
 
@@ -363,11 +385,12 @@ public class Cruzamento extends Application {
 
     }
 
-    private void criarCarro(Stage stage) {
+    private Rectangle criarCarro(Stage stage) {
         Rectangle c;
-        carro = new Rectangle(comprimento, largura, Color.CYAN);
-        c = carro;
+        c = new Rectangle(comprimento, largura, Color.CYAN);
+
         root.getChildren().add(c);
+        return c;
 
     }
 
