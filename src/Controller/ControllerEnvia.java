@@ -48,6 +48,12 @@ public class ControllerEnvia implements Runnable {
         long fim, intervalo, tempo;
         long inicio = System.currentTimeMillis();
         
+        try {
+            Thread.sleep(40);//para dá tempo para o javaFx colocar o carrinho na tela
+        } catch (InterruptedException ex) {
+            System.out.println("Não esperou");
+        }
+        
         while (true) {
             
             x = carro.getLocalToParentTransform().getTx();
@@ -73,9 +79,9 @@ public class ControllerEnvia implements Runnable {
                 if(tempo < 0){
                     break;
                 }
-                Thread.sleep(3);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-                System.out.println("deu ruim");
+                System.out.println("Deu ruim");
             } catch (UnknownHostException ex) {
                 Logger.getLogger(ControllerEnvia.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SocketException ex) {

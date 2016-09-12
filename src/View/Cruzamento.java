@@ -113,7 +113,9 @@ public class Cruzamento extends Application {
         ta.setEditable(false);
 
         Button btStart = new Button("Start");
-
+        
+        controller = new Controller();
+        
         btStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -127,7 +129,8 @@ public class Cruzamento extends Application {
 
                     try {
 
-                        controller = new Controller(c, origem, destino);
+                        controller.setController(c, origem, destino);
+                        
                         carros = controller.escutaCarros();
                         //desenhar carros dos quais recebeu mensagens
                         if (carros != null) {
@@ -241,9 +244,9 @@ public class Cruzamento extends Application {
 
         Path caminho = new Path();
 
-        int reto = 2000;
-        int direita = 3000;
-        int esquerda = 4000;
+        int reto = 2500;
+        int direita = 3500;
+        int esquerda = 4500;
 
         tipo = tipo.trim();
         System.out.println(tipo);
@@ -535,14 +538,14 @@ public class Cruzamento extends Application {
 
         boolean certo = true;
 
-        int reto = 2000;
-        int direita = 3000;
-        int esquerda = 4000;
+        int reto = 3500;
+        int direita = 4500;
+        int esquerda = 5500;
 
         Path caminho = new Path();
 
         if (this.tempoEspera == 0) {
-            this.tempoEspera = 1000;
+            this.tempoEspera = 2000;
         }
 
         switch (tipo) {

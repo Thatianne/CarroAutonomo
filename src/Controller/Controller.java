@@ -26,7 +26,7 @@ public class Controller {
     private String destinoString;
 
     private final String grupo = "239.0.0.1";
-    private long tempo1 = 1000;
+    private long tempo1 = 2000;
     private String origem;
     private String destino;
     private int preferencia;
@@ -43,9 +43,22 @@ public class Controller {
         this.msgCarros = new ArrayList<String>();
 
     }
+    
+    public Controller(){
+        this.msgCarros = new ArrayList<String>();
+    }
+    
+    
+    public void setController(Rectangle carro, String origem, String destino){
+        this.origem = origem;
+        this.destino = destino;
+        this.carro = carro;
+    }
 
     public ArrayList escutaCarros() throws IOException {
 
+        this.msgCarros = new ArrayList<String>();
+        
         this.ms = new MulticastSocket(5000);
 
         ms.setSoTimeout(100);//tempo de espera de mensagem                        
@@ -65,6 +78,7 @@ public class Controller {
             try {
                 //esperar por mensagem durante 300 milisegundos
                 String rel = null;
+                                
                 msg = receberMensagem();
                 System.out.println(msg);
                 if(msg!=null){
@@ -161,10 +175,16 @@ public class Controller {
 
             byte[] rec = new byte[256];
             dp = new DatagramPacket(rec, rec.length);
+            InetAddress ia = InetAddress.getLocalHost();
+                        
             //relogioLogico tempoQueVaiDemorar posicaoX posicaoY ViaOrigem ViaDestino
             ms.receive(dp);
 
-            msg = new String(dp.getData());
+            msg = new String(dp.getData());            
+            
+            if(dp.getAddress().equals(ia)){
+                msg = null;                
+            }
 
         } catch (SocketTimeoutException e) {
             System.out.println("Tempo de espera expirado");
@@ -180,11 +200,11 @@ public class Controller {
         long tempo = 0;
         String n = origem + " " + destino;
         if (n.equals("Norte Sul") || n.equals("Sul Norte") || n.equals("Leste Oeste") || n.equals("Oeste Leste")) {
-            tempo = 2000;
+            tempo = 3500;
         } else if (n.equals("Norte Oeste") || n.equals("Leste Norte") || n.equals("Sul Leste") || n.equals("Oeste Sul")) {
-            tempo = 3000;
+            tempo = 4500;
         } else {
-            tempo = 4000;
+            tempo = 5500;
         }
 
         return tempo;
