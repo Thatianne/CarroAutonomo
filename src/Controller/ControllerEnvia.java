@@ -73,7 +73,7 @@ public class ControllerEnvia implements Runnable {
                 if(tempo < 0){
                     break;
                 }
-                Thread.sleep(50);
+                Thread.sleep(3);
             } catch (InterruptedException ex) {
                 System.out.println("deu ruim");
             } catch (UnknownHostException ex) {

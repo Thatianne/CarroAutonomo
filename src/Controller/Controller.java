@@ -47,9 +47,9 @@ public class Controller {
     public ArrayList escutaCarros() throws IOException {
 
         this.ms = new MulticastSocket(5000);
-        
+
         ms.setSoTimeout(100);//tempo de espera de mensagem                        
-        
+
         InetAddress grp = InetAddress.getByName(this.grupo);
         ms.joinGroup(grp);
 
@@ -61,32 +61,48 @@ public class Controller {
 
         inicio = System.currentTimeMillis();
 
-        while (tempo <= 300) {
+        while (tempo <= 20) {
             try {
                 //esperar por mensagem durante 300 milisegundos
+                String rel = null;
+                msg = receberMensagem();
+                System.out.println(msg);
+                if(msg!=null){
+                    rel = msg.substring(0, msg.indexOf(" "));
+                }
                 
-                msg = receberMensagem();                                
-                
-                if (msgCarros != null) {                    
+                int k = 0;
+
+                if (msgCarros != null) {
                     if (msg != null) {
-                        String rel = msg.substring(0, msg.indexOf(" "));
-                        //ver se o já tem o número do relógio lógico no array
-                        if(msgCarros.size()==0){
+
+                        if (msgCarros.size() == 0) {
+                            k++;
+                            System.out.println(k);
                             msgCarros.add(msg);
                         }
-                        for(int i=0; i<msgCarros.size(); i++){
+                        for (int i = 0; i < msgCarros.size(); i++) {
+
                             String m = msgCarros.get(i);
+
+                            //ver se o já tem o número do relógio lógico no array
                             StringTokenizer st = new StringTokenizer(m);
                             String s = st.nextToken();
-                            if(!rel.equals(s)){
+
+                            s = s.trim();
+                            rel = rel.trim();
+
+                            if (!rel.equals(s)) {
+                                k++;
+                                System.out.println(k);
                                 msgCarros.add(msg);
                             }
-                        }                        
+                        }
                     }
                 }
 
                 fim = System.currentTimeMillis();
-                tempo = fim - inicio;               
+                tempo = fim - inicio;
 
             } catch (IOException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
@@ -94,16 +110,16 @@ public class Controller {
 
         }
         //Depois que recebeu as mensagens ai vai freiar se precisar e verificar se as rotas chocam
-        if (msgCarros != null && msgCarros.size()>1) {
+        if (msgCarros != null && msgCarros.size() > 1) {
             Collections.sort(msgCarros, new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {
-                    StringTokenizer st1 = new StringTokenizer(o1);                    
+                    StringTokenizer st1 = new StringTokenizer(o1);
                     StringTokenizer st2 = new StringTokenizer(o2);
-                    
+
                     String oS1 = st1.nextToken();
                     String oS2 = st2.nextToken();
-                    
+
                     int log1 = Integer.parseInt(oS1);
                     int log2 = Integer.parseInt(oS2);
                     if (log1 < log2) {
@@ -117,20 +133,20 @@ public class Controller {
 
         //criar thread e mandar mensagens
         if (msgCarros != null && msgCarros.size() != 0) {
-            
+
             String ultimo = msgCarros.get(msgCarros.size() - 1);
             StringTokenizer st = new StringTokenizer(ultimo);
-                        
+
             String n = st.nextToken();
             preferencia = Integer.parseInt(n);
-                        
+
             String temp = st.nextToken();
             tempo1 = Long.parseLong(temp);
         }
 
         preferencia++;
         long n = setTempo(origem, destino);//tempo necessário
-        enviarCtrl = new ControllerEnvia(carro, preferencia, n+tempo1, origem, destino);
+        enviarCtrl = new ControllerEnvia(carro, preferencia, n + tempo1, origem, destino);
         //tomar as decisões com base nos carros ouvidos
         Thread t = new Thread(enviarCtrl);
         t.start();
@@ -147,7 +163,7 @@ public class Controller {
             dp = new DatagramPacket(rec, rec.length);
             //relogioLogico tempoQueVaiDemorar posicaoX posicaoY ViaOrigem ViaDestino
             ms.receive(dp);
-            
+
             msg = new String(dp.getData());
 
         } catch (SocketTimeoutException e) {
@@ -162,15 +178,15 @@ public class Controller {
 
     private long setTempo(String origem, String destino) {
         long tempo = 0;
-        String n = origem +" "+destino;
-        if(n.equals("Norte Sul") || n.equals("Sul Norte") || n.equals("Leste Oeste") || n.equals("Oeste Leste")){
-            tempo = 2000;            
-        }else if(n.equals("Norte Oeste") || n.equals("Leste Norte")|| n.equals("Sul Leste") || n.equals("Oeste Sul")){
+        String n = origem + " " + destino;
+        if (n.equals("Norte Sul") || n.equals("Sul Norte") || n.equals("Leste Oeste") || n.equals("Oeste Leste")) {
+            tempo = 2000;
+        } else if (n.equals("Norte Oeste") || n.equals("Leste Norte") || n.equals("Sul Leste") || n.equals("Oeste Sul")) {
             tempo = 3000;
-        }else{
+        } else {
             tempo = 4000;
-        }            
-        
+        }
+
         return tempo;
     }
 }
