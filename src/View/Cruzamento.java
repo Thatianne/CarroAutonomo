@@ -1,6 +1,7 @@
 package View;
 
 import Controller.Controller;
+import Controller.Start;
 import Model.Via;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class Cruzamento extends Application {
     }
 
     private void prepara(Stage stage) {
-
+        
         root = new Group();
 
         HBox hbLayout = new HBox(15);
@@ -112,9 +113,11 @@ public class Cruzamento extends Application {
         ta.setMaxSize(210, 220);
         ta.setEditable(false);
 
-        Button btStart = new Button("Start");
+        Button btStart = new Button("Start");        
         
-        controller = new Controller();
+        this.controller = new Controller();
+        Start start = new Start();
+        start.comeca(this.controller);
         
         btStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -124,23 +127,11 @@ public class Cruzamento extends Application {
 
                 origem = cbOrigem.getValue().toString();
                 destino = cbDestino.getValue().toString();
-                if (!origem.equals(destino) && !origem.equals("Escolha a origem") && !destino.equals("Escolha o destino")) {
-                    Rectangle c = criarCarro(stage);
-
-                    try {
-
-                        controller.setController(c, origem, destino);
-                        
-                        carros = controller.escutaCarros();
-                        //desenhar carros dos quais recebeu mensagens
-                        if (carros != null) {
-                            desenharCarros(stage, carros, ta, origem, destino);
-                        }
-
-                        animar(c, origem + " " + destino, tempoEspera);
-                    } catch (IOException ex) {
-                        Logger.getLogger(Cruzamento.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                if (!origem.equals(destino) && !origem.equals("Escolha a origem") && !destino.equals("Escolha o destino")) {                    
+                    
+                    //Onde começa tudo
+                                                                                
+                    
                 } else {
 
                     Alert alert = new Alert(Alert.AlertType.WARNING);
