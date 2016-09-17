@@ -56,7 +56,8 @@ public class Recebe implements Runnable {
 
         while (true) {
             String ip;
-            String id;
+            String idString;
+            int id;
             try {
 
                 recebeByte = new byte[1000];
@@ -74,8 +75,16 @@ public class Recebe implements Runnable {
                             0       1      2    3   4       5 
                     */
 
-                    this.attRelogio(Integer.parseInt(str[1]));
-
+                    ip = dataPacket.getAddress().getHostAddress();
+                    idString = ip.substring(ip.lastIndexOf("."), ip.length());
+                    id = Integer.parseInt(idString);
+                    
+                    float posX = Float.parseFloat(str[2]);
+                    float posY = Float.parseFloat(str[3]);
+                    String origem = str[4];
+                    String destino = str[5];
+                    int relogioOutro = Integer.parseInt(str[1]);
+                    
                     switch (str[0]) {
                         case "CONECTADO": {
                             
@@ -89,18 +98,53 @@ public class Recebe implements Runnable {
                         case "BLZ": {
                             
                             //Precisa pegar o IP de quem enviou o datagrama
-                            ip = dataPacket.getAddress().getHostAddress();
-                            id = ip.substring(ip.lastIndexOf("."), ip.length());
-                            Carro carro = new Carro(Integer.parseInt(str[1]), Integer.parseInt(id),
-                                    Float.parseFloat(str[2]), Float.parseFloat(str[3]), str[4], str[5]);
+                            
+                            Carro carro = new Carro(relogioOutro, id,
+                                    posX, posY, origem, destino);
                             
                             controller.addCarro(carro);
                             break;
                         }
                         case "ENTRAR":{
-                            if(this.controller.getMeuRelogio() < Integer.parseInt(str[1])){
+                            
+                            String mensagem;
+                            
+                            this.controller.atualizarCarro(id, relogioOutro, posX, posY);
+                            
+                            if(this.controller.getMeuRelogio() < relogioOutro){//Pode entrar
+                                //Atualiza o relógio
+                                this.controller.setMeuRelogio(relogioOutro + 1);
+                                //Atualiza o outro carro
                                 
+                                mensagem = "OK-"+ this.controller.getMeuRelogio() + "-" + this.controller.getPosX()
+                                    + "-" + this.controller.getPosY() + "-" + this.controller.getOrigem()
+                                    + "-" + this.controller.getDestino();
+                                
+                            }else{
+                                //Não pode entrar
+                                
+                                mensagem = "NOT-"+ this.controller.getMeuRelogio() + "-" + this.controller.getPosX()
+                                    + "-" + this.controller.getPosY() + "-" + this.controller.getOrigem()
+                                    + "-" + this.controller.getDestino();
                             }
+                            
+                            DatagramPacket dp = new DatagramPacket(mensagem.getBytes(), mensagem.length(),this.iaGrupo, this.porta);
+                            socket.send(dp);
+                            
+                            break;
+                        }
+                        case "OK":{
+                            //Tenho que receber OK's = tamanho da lista de carros
+                            this.controller.addPermissao(this.mensagem);
+                            
+                            break;
+                        }
+                        case "NOT":{
+                            this.controller.setMinhaVez(false);
+                            break;
+                        }
+                        case "SAIR":{
+                            this.controller.carroSaiu(id);
                             break;
                         }
                     }
@@ -129,8 +173,5 @@ public class Recebe implements Runnable {
         }
     }
 
-    private void attRelogio(int parseInt) {
-
-    }
 
 }

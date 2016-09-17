@@ -6,8 +6,6 @@ import Model.Via;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.PathTransition;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -32,6 +30,7 @@ public class Cruzamento extends Application {
     private Controller controller;
 
     private ArrayList<String> carros;
+    private Start start;
     private Group root;
     private Rectangle carro;
     private final float posNorteX = 228;//+15
@@ -116,8 +115,8 @@ public class Cruzamento extends Application {
         Button btStart = new Button("Start");        
         
         this.controller = new Controller();
-        Start start = new Start();
-        start.comeca(this.controller);
+        this.start = new Start();
+        this.start.comeca(this.controller);
         
         btStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override

@@ -25,7 +25,8 @@ public class Carro {
     public Carro(){
         
     }
-
+    
+    
     public int getRelogio() {
         return relogio;
     }
